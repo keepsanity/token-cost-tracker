@@ -1,0 +1,285 @@
+/* ── Settings panel ── */
+
+#tct_open_popup {
+    justify-content: center;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-bottom: 12px;
+}
+
+/* ── Popup shared ── */
+
+.tct-popup {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 400px;
+}
+
+.tct-popup h3 {
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tct-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.tct-header h3 {
+    margin: 0;
+}
+
+.tct-back-btn {
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    transition: background 0.15s;
+}
+
+.tct-back-btn:hover {
+    background: var(--SmartThemeBorderColor, #555);
+}
+
+.tct-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.tct-footer {
+    flex-shrink: 0;
+    padding-top: 10px;
+    border-top: 1px solid var(--SmartThemeBorderColor, #444);
+    margin-top: 10px;
+}
+
+/* ── View 1: Calendar (date buttons) ── */
+
+.tct-date-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tct-date-btn {
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    text-align: center;
+    min-width: 100px;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tct-date-btn:hover {
+    background: var(--SmartThemeBorderColor, #555);
+    border-color: var(--SmartThemeQuoteColor, #e8c170);
+}
+
+.tct-date-btn .tct-date-label {
+    font-weight: 600;
+    font-size: 0.95em;
+}
+
+.tct-date-btn .tct-date-cost {
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.tct-date-btn .tct-date-count {
+    font-size: 0.75em;
+    opacity: 0.5;
+}
+
+.tct-total-summary {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    font-size: 0.95em;
+}
+
+.tct-total-cost {
+    font-weight: bold;
+    color: var(--SmartThemeQuoteColor, #e8c170);
+}
+
+.tct-footer-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    white-space: nowrap;
+}
+
+.tct-empty {
+    text-align: center;
+    padding: 40px 20px;
+    opacity: 0.6;
+    font-size: 0.95em;
+}
+
+/* ── View 2: Day records ── */
+
+.tct-record-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tct-record-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.tct-record-card:hover {
+    background: var(--SmartThemeBorderColor, #555);
+    border-color: var(--SmartThemeQuoteColor, #e8c170);
+}
+
+.tct-record-icon {
+    flex-shrink: 0;
+    width: 32px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tct-model-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.tct-record-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.tct-record-model {
+    font-weight: 600;
+    font-size: 0.95em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tct-record-tokens {
+    font-size: 0.82em;
+    opacity: 0.7;
+    margin-top: 2px;
+}
+
+.tct-record-cost {
+    font-weight: bold;
+    color: var(--SmartThemeQuoteColor, #e8c170);
+    flex-shrink: 0;
+    font-size: 0.9em;
+}
+
+.tct-record-delete {
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    opacity: 0.5;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+}
+
+.tct-record-delete:hover {
+    opacity: 1;
+    color: #e74c3c;
+}
+
+.tct-day-summary {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    font-size: 0.9em;
+    text-align: center;
+}
+
+.tct-day-delete {
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    font-size: 0.85em;
+    transition: background 0.15s;
+}
+
+.tct-day-delete:hover {
+    background: rgba(231, 76, 60, 0.4);
+}
+
+/* ── View 3: Detail ── */
+
+.tct-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.2));
+    margin-bottom: 14px;
+    font-size: 0.9em;
+}
+
+.tct-detail-meta span {
+    white-space: nowrap;
+}
+
+.tct-detail-meta .tct-total-cost {
+    font-weight: bold;
+}
+
+.tct-detail-section {
+    margin-bottom: 14px;
+}
+
+.tct-detail-section h4 {
+    margin: 0 0 6px 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tct-detail-content {
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: var(--SmartThemeBlurTintColor, rgba(0,0,0,0.15));
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.9em;
+    max-height: 300px;
+    overflow-y: auto;
+    line-height: 1.5;
+}
+
+.tct-prompt-content {
+    font-size: 0.82em;
+    max-height: 400px;
+    opacity: 0.85;
+}
