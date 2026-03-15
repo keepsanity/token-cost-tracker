@@ -13,7 +13,7 @@ const isKo = (navigator.language || '').startsWith('ko');
 
 const I18N = {
     title:              isKo ? '토큰 사용량 트래커' : 'Token Cost Tracker',
-    enableTracking:     isKo ? '비용 추적 활성화' : 'Enable Cost Tracking',
+    enableTracking:     isKo ? '사용량 추적 활성화' : 'Enable Cost Tracking',
     autoDelete:         isKo ? '30일 후 자동 삭제' : 'Auto-delete after 30 days',
     openTracker:        isKo ? '토큰 사용량 트래커 열기' : 'Open Token Cost Tracker',
     close:              isKo ? '닫기' : 'Close',
