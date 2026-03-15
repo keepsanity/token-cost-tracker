@@ -580,12 +580,22 @@ function installFetchInterceptor() {
             }
         }
 
-        // Background timeout: if not consumed by GENERATION_ENDED within 5s
+        // Background / cleanup timeout
+        // SSE = chat generation (consumed by GENERATION_ENDED) → long cleanup (120s)
+        // JSON = likely background/extension call → short auto-record (5s)
+        const bgTimeout = isSSE ? 120000 : 5000;
         setTimeout(async () => {
             const call = pendingApiCalls.get(callId);
-            if (!call) return; // already consumed
+            if (!call) return; // already consumed by GENERATION_ENDED
             pendingApiCalls.delete(callId);
 
+            // SSE calls that weren't consumed = cancelled/failed generation, just clean up
+            if (call.isSSE) {
+                console.log(`[TCT] Cleaned up unclaimed SSE call #${callId}`);
+                return;
+            }
+
+            // Non-SSE: record as background call
             let pt = call.promptTokens;
             let ct = call.completionTokens;
             if (!call.hasUsage) {
@@ -600,7 +610,7 @@ function installFetchInterceptor() {
             const cost = calculateCost(call.model, pt, ct);
             await recordGeneration(call.model, api, pt, ct, cost, '(background)', call.extractedResponse || '', call.sentPrompt);
             console.log(`[TCT] Background #${callId}: ${call.model}, prompt=${pt}, completion=${ct}, $${cost.toFixed(6)}`);
-        }, 5000);
+        }, bgTimeout);
 
         return response;
     };
