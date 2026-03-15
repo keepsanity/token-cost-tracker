@@ -268,7 +268,7 @@ async function recordGeneration(model, api, promptTokens, completionTokens, cost
     const records = await getRecordsForDate(dateKey);
 
     records.push({
-        id: crypto.randomUUID(),
+        id: (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`),
         timestamp: new Date().toISOString(),
         model,
         api,
@@ -485,10 +485,10 @@ function extractRequestInfo(options) {
             sentPrompt = sentPrompt.slice(0, MAX_PROMPT_LENGTH) + '\n\n... (truncated)';
         }
 
-        return { model, sentPrompt };
+        return { model, sentPrompt, stream: !!body.stream };
     } catch (e) {
         console.warn('[TCT] extractRequestInfo error:', e);
-        return { model: 'unknown', sentPrompt: '' };
+        return { model: 'unknown', sentPrompt: '', stream: false };
     }
 }
 
@@ -529,9 +529,12 @@ function installFetchInterceptor() {
         const contentType = response.headers.get('content-type') || '';
         const requestInfo = extractRequestInfo(options);
         const callId = ++callIdCounter;
-        const isSSE = contentType.includes('text/event-stream');
 
-        console.log(`[TCT] Intercepted #${callId}: type=${contentType.split(';')[0]}, model=${requestInfo.model}`);
+        // Detect streaming from REQUEST body (not response Content-Type)
+        // SillyTavern's forwardFetchResponse() doesn't set Content-Type header
+        const isSSE = requestInfo.stream || contentType.includes('text/event-stream');
+
+        console.log(`[TCT] Intercepted #${callId}: stream=${requestInfo.stream}, type=${contentType.split(';')[0]}, model=${requestInfo.model}`);
 
         // ALWAYS store call info immediately (even before usage data is known)
         const callEntry = {
