@@ -926,25 +926,19 @@ function bindSettingsEvents() {
         if (openBtn) openBtn.textContent = I18N.openTracker;
     }
 
-    const enabledCb = document.getElementById('tct_enabled');
-    if (enabledCb) {
-        enabledCb.checked = settings.enabled;
-        enabledCb.addEventListener('change', () => {
-            settings.enabled = enabledCb.checked;
-            saveSettings();
-        });
-    }
+    $('#tct_enabled').prop('checked', settings.enabled);
+    $(document).on('change', '#tct_enabled', function () {
+        settings.enabled = $(this).is(':checked');
+        saveSettings();
+    });
 
-    const autoDeleteCb = document.getElementById('tct_auto_delete');
-    if (autoDeleteCb) {
-        autoDeleteCb.checked = settings.autoDeleteEnabled;
-        autoDeleteCb.addEventListener('change', () => {
-            settings.autoDeleteEnabled = autoDeleteCb.checked;
-            saveSettings();
-        });
-    }
+    $('#tct_auto_delete').prop('checked', settings.autoDeleteEnabled);
+    $(document).on('change', '#tct_auto_delete', function () {
+        settings.autoDeleteEnabled = $(this).is(':checked');
+        saveSettings();
+    });
 
-    document.getElementById('tct_open_popup')?.addEventListener('click', openTrackerPopup);
+    $(document).on('click', '#tct_open_popup', openTrackerPopup);
 }
 
 // ── Init ─────────────────────────────────────────────────────
