@@ -220,28 +220,55 @@ async function serverDelete(filename) {
     if (!res.ok) console.warn(`[TCT] Delete failed: ${res.status}`);
 }
 
-// Index: tracks which date files exist (small, fast to load)
+// Index: summary cache for calendar view.
+// New format: [{ key, count, cost }, ...] sorted by key desc.
+// Old format (legacy): [key, key, ...] — auto-migrated on first load.
 async function loadIndex() {
-    return (await serverLoad('index.json')) || [];
-}
+    const data = await serverLoad('index.json');
+    if (!Array.isArray(data) || data.length === 0) return [];
 
-async function saveIndex(keys) {
-    await serverSave('index.json', keys);
-}
-
-async function addDateToIndex(dateKey) {
-    const idx = await loadIndex();
-    if (!idx.includes(dateKey)) {
-        idx.push(dateKey);
-        idx.sort().reverse();
-        await saveIndex(idx);
+    // Detect legacy format and migrate
+    if (typeof data[0] === 'string') {
+        console.log('[TCT] Migrating legacy index to summary format...');
+        const migrated = [];
+        for (const key of data) {
+            const records = (await serverLoad(`${key}.json`)) || [];
+            if (records.length === 0) continue;
+            migrated.push({
+                key,
+                count: records.length,
+                cost: records.reduce((s, r) => s + (r.cost || 0), 0),
+            });
+        }
+        migrated.sort((a, b) => b.key.localeCompare(a.key));
+        await saveIndex(migrated);
+        console.log(`[TCT] Migrated ${migrated.length} dates`);
+        return migrated;
     }
+
+    return data;
+}
+
+async function saveIndex(entries) {
+    await serverSave('index.json', entries);
+}
+
+async function updateIndexForDate(dateKey, records) {
+    const idx = await loadIndex();
+    const filtered = idx.filter(e => e.key !== dateKey);
+    filtered.push({
+        key: dateKey,
+        count: records.length,
+        cost: records.reduce((s, r) => s + (r.cost || 0), 0),
+    });
+    filtered.sort((a, b) => b.key.localeCompare(a.key));
+    await saveIndex(filtered);
 }
 
 async function removeDateFromIndex(dateKey) {
-    let idx = await loadIndex();
-    idx = idx.filter(k => k !== dateKey);
-    await saveIndex(idx);
+    const idx = await loadIndex();
+    const filtered = idx.filter(e => e.key !== dateKey);
+    await saveIndex(filtered);
 }
 
 // Per-day record files
@@ -255,12 +282,13 @@ async function saveRecordsForDate(dateKey, records) {
         await removeDateFromIndex(dateKey);
     } else {
         await serverSave(`${dateKey}.json`, records);
-        await addDateToIndex(dateKey);
+        await updateIndexForDate(dateKey, records);
     }
 }
 
 async function getAllDateKeys() {
-    return await loadIndex();
+    const idx = await loadIndex();
+    return idx.map(e => e.key);
 }
 
 async function recordGeneration(model, api, promptTokens, completionTokens, cost, userMessage, aiResponse, sentPrompt) {
@@ -295,9 +323,9 @@ async function deleteDate(dateKey) {
 }
 
 async function clearAllData() {
-    const keys = await loadIndex();
-    for (const key of keys) {
-        await serverDelete(`${key}.json`);
+    const idx = await loadIndex();
+    for (const entry of idx) {
+        await serverDelete(`${entry.key}.json`);
     }
     await saveIndex([]);
 }
@@ -310,16 +338,16 @@ async function pruneOldData() {
     cutoff.setDate(cutoff.getDate() - settings.autoDeleteDays);
     const cutoffKey = cutoff.toISOString().slice(0, 10);
 
-    const keys = await loadIndex();
+    const idx = await loadIndex();
     let pruned = 0;
-    for (const key of keys) {
-        if (key < cutoffKey) {
-            await serverDelete(`${key}.json`);
+    for (const entry of idx) {
+        if (entry.key < cutoffKey) {
+            await serverDelete(`${entry.key}.json`);
             pruned++;
         }
     }
     if (pruned > 0) {
-        const remaining = keys.filter(k => k >= cutoffKey);
+        const remaining = idx.filter(e => e.key >= cutoffKey);
         await saveIndex(remaining);
         console.log(`[TCT] Pruned ${pruned} days of old data`);
     }
@@ -733,19 +761,15 @@ async function openTrackerPopup() {
 
 async function renderCalendarView(container) {
     const sym = getSettings().currencySymbol || '$';
-    const keys = await getAllDateKeys();
+    const idx = await loadIndex();
 
     let totalCost = 0;
     let totalCount = 0;
-    const dateInfos = [];
-
-    for (const key of keys) {
-        const records = await getRecordsForDate(key);
-        const dayCost = records.reduce((sum, r) => sum + r.cost, 0);
-        totalCost += dayCost;
-        totalCount += records.length;
-        dateInfos.push({ key, count: records.length, cost: dayCost });
-    }
+    const dateInfos = idx.map(e => {
+        totalCost += e.cost;
+        totalCount += e.count;
+        return { key: e.key, count: e.count, cost: e.cost };
+    });
 
     let html = `<div class="tct-header"><h3><i class="fa-solid fa-chart-line"></i> ${I18N.title}</h3></div>`;
     html += '<div class="tct-body">';
@@ -768,7 +792,7 @@ async function renderCalendarView(container) {
 
     html += '<div class="tct-footer">';
     if (dateInfos.length > 0) {
-        html += `<div class="tct-total-summary">${I18N.total(keys.length)}: <span class="tct-total-cost">${sym}${totalCost.toFixed(4)}</span> &middot; ${I18N.generations(totalCount)}</div>`;
+        html += `<div class="tct-total-summary">${I18N.total(dateInfos.length)}: <span class="tct-total-cost">${sym}${totalCost.toFixed(4)}</span> &middot; ${I18N.generations(totalCount)}</div>`;
     }
     html += '<div class="tct-footer-buttons">';
     html += `<div class="menu_button tct-export-btn"><i class="fa-solid fa-file-export"></i> ${I18N.export_}</div>`;
