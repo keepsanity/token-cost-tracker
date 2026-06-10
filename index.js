@@ -112,7 +112,9 @@ const MODEL_PRICING = {
     'glm-4.5-flash':        { input: 0.00,  output: 0.00 },
     'glm-4-32b-0414-128k':  { input: 0.10,  output: 0.10 },
 
-    // ── DeepSeek (updated March 2026 - V3.2 unified pricing) ──
+    // ── DeepSeek (updated June 2026) ──
+    'deepseek-v4-flash': { input: 0.14,  output: 0.28 },
+    'deepseek-v4-pro':   { input: 0.435, output: 0.87 },
     'deepseek-chat':     { input: 0.28,  output: 0.42 },
     'deepseek-reasoner': { input: 0.28,  output: 0.42 },
 
