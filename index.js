@@ -66,6 +66,8 @@ const MODEL_PRICING = {
     'o1':                { input: 15.00, output: 60.00 },
 
     // ── Anthropic Claude (updated March 2026) ──
+    'claude-fable-5':    { input: 10.00, output: 50.00 },
+    'claude-opus-4.8':   { input: 5.00,  output: 25.00 },
     'claude-opus-4.7':   { input: 5.00,  output: 25.00 },
     'claude-opus-4.6':   { input: 5.00,  output: 25.00 },
     'claude-sonnet-4.6': { input: 3.00,  output: 15.00 },
@@ -81,6 +83,7 @@ const MODEL_PRICING = {
     'claude-3-haiku':    { input: 0.25,  output: 1.25 },
 
     // ── Google Gemini (updated March 2026) ──
+    'gemini-3.5-flash':  { input: 1.50,  output: 9.00 },
     'gemini-3.1-pro':    { input: 2.00,  output: 12.00 },
     'gemini-3-flash':    { input: 0.50,  output: 3.00 },
     'gemini-2.5-pro':    { input: 1.25,  output: 10.00 },
@@ -89,6 +92,25 @@ const MODEL_PRICING = {
     'gemini-2.0-flash':  { input: 0.10,  output: 0.40 },
     'gemini-1.5-pro':    { input: 1.25,  output: 5.00 },
     'gemini-1.5-flash':  { input: 0.075, output: 0.30 },
+
+    // ── Moonshot Kimi (updated June 2026) ──
+    'kimi-k2.6':            { input: 0.95,  output: 4.00 },
+    'kimi-k2.5':            { input: 0.60,  output: 3.00 },
+
+    // ── Zhipu GLM (updated June 2026) ──
+    'glm-5.1':              { input: 1.40,  output: 4.40 },
+    'glm-5':                { input: 1.00,  output: 3.20 },
+    'glm-5-turbo':          { input: 1.20,  output: 4.00 },
+    'glm-4.7':              { input: 0.60,  output: 2.20 },
+    'glm-4.7-flashx':       { input: 0.07,  output: 0.40 },
+    'glm-4.7-flash':        { input: 0.00,  output: 0.00 },
+    'glm-4.6':              { input: 0.60,  output: 2.20 },
+    'glm-4.5':              { input: 0.60,  output: 2.20 },
+    'glm-4.5-x':            { input: 2.20,  output: 8.90 },
+    'glm-4.5-air':          { input: 0.20,  output: 1.10 },
+    'glm-4.5-airx':         { input: 1.10,  output: 4.50 },
+    'glm-4.5-flash':        { input: 0.00,  output: 0.00 },
+    'glm-4-32b-0414-128k':  { input: 0.10,  output: 0.10 },
 
     // ── DeepSeek (updated March 2026 - V3.2 unified pricing) ──
     'deepseek-chat':     { input: 0.28,  output: 0.42 },
