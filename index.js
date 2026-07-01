@@ -66,6 +66,7 @@ const MODEL_PRICING = {
     'o1':                { input: 15.00, output: 60.00 },
 
     // ── Anthropic Claude (updated March 2026) ──
+    'claude-sonnet-5':   { input: 2.00,  output: 10.00 },
     'claude-fable-5':    { input: 10.00, output: 50.00 },
     'claude-opus-4.8':   { input: 5.00,  output: 25.00 },
     'claude-opus-4.7':   { input: 5.00,  output: 25.00 },
